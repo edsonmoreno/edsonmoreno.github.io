@@ -1,16 +1,244 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pensum Ingeniería en Informática - UNE</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    h2 {
+      margin-top: 30px;
+      background: #ddd;
+      padding: 10px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 30px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    .materia {
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .predecessor {
+      background-color: #d4f9d4 !important; /* Verde */
+    }
+    .successor {
+      background-color: #f9d4d4 !important; /* Rojo */
+    }
+    .checkbox {
+      transform: scale(1.2);
+    }
+    #arbol {
+      white-space: pre;
+      font-family: monospace;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+    button {
+      margin: 10px 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pensum de Ingeniería en Informática - UNE</h1>
+
+  <div id="contenedor"></div>
+
+  <button onclick="generarArbol()">Generar Árbol de Prelaciones</button>
+  <div id="arbol"></div>
+
+  <script>
+    const materias = {
+      "412101": { nombre: "Introducción a Ing. Informática", semestre: 1 },
+      "415102": { nombre: "Computación I", semestre: 1 },
+      "834102": { nombre: "Matemática Discreta", semestre: 1 },
+      "826101": { nombre: "Matemática I", semestre: 1 },
+      "1033101": { nombre: "Lenguaje y Comunicación", semestre: 1 },
+      "1032109T": { nombre: "Efectiva Personal", semestre: 1 },
+
+      "416202": { nombre: "Programación I", semestre: 2, pre: ["834102", "415102"] },
+      "914201": { nombre: "Química General I", semestre: 2 },
+      "826201": { nombre: "Matemática II", semestre: 2, pre: ["826101"] },
+      "846203": { nombre: "Física I", semestre: 2, pre: ["826101"] },
+      "842204L": { nombre: "Laboratorio de Física I", semestre: 2, pre: ["846203"] },
+
+      "424301": { nombre: "Estructura de Datos", semestre: 3, pre: ["416202"] },
+      "413302": { nombre: "Teoría General de Sistemas", semestre: 3, pre: ["412101"] },
+      "826301": { nombre: "Matemática III", semestre: 3, pre: ["826201"] },
+      "846302": { nombre: "Física II", semestre: 3, pre: ["826201", "846203", "842204L"] },
+      "842303L": { nombre: "Laboratorio de Física II", semestre: 3, pre: ["846302"] },
+      "1023202": { nombre: "Inglés I", semestre: 3 },
+
+      "425401": { nombre: "Programación II", semestre: 4, pre: ["424301"] },
+      "425404": { nombre: "Fund. de Lógica Digital", semestre: 4, pre: ["846302", "416202"] },
+      "834405": { nombre: "Estadística I", semestre: 4, pre: ["826301"] },
+      "826401": { nombre: "Matemática IV", semestre: 4, pre: ["826301"] },
+      "1023302": { nombre: "Inglés II", semestre: 4, pre: ["1023202"] },
+      "1032201": { nombre: "Ciencia y Sociedad I", semestre: 4 },
+
+      "426502": { nombre: "Organización del Computador", semestre: 5, pre: ["425401", "425404"] },
+      "425501": { nombre: "Base de Datos I", semestre: 5, pre: ["413302", "425401"] },
+      "834501": { nombre: "Estadística II", semestre: 5, pre: ["834405"] },
+      "Auto": { nombre: "Automatización", semestre: 5, pre: ["425401", "425404"] },
+      "1032301": { nombre: "Necesidad, Valores y Proyecto de Vida", semestre: 5, pre: ["1032201"] },
+      "834504": { nombre: "Análisis Numérico", semestre: 5, pre: ["826401"] },
+
+      "425602": { nombre: "Comunicaciones I", semestre: 6, pre: ["426502"] },
+      "425601": { nombre: "Sistemas de Información I", semestre: 6, pre: ["425501"] },
+      "425605": { nombre: "Investigación de Operaciones I", semestre: 6, pre: ["826401"] },
+      "425603": { nombre: "Sistemas Operativos", semestre: 6, pre: ["426502"] },
+      "424604": { nombre: "Multimedia", semestre: 6, pre: ["425501"] },
+      "1013401": { nombre: "Economía", semestre: 6, pre: ["826201"] },
+      "1000001": { nombre: "Servicio Comunitario", semestre: 6 },
+
+      "425702": { nombre: "Comunicaciones II", semestre: 7, pre: ["425602"] },
+      "425705": { nombre: "Base de Datos II", semestre: 7, pre: ["425601"] },
+      "425701": { nombre: "Investigación de Operaciones II", semestre: 7, pre: ["425605"] },
+      "423703": { nombre: "Electiva I", semestre: 7 },
+      "425706": { nombre: "Compiladores e Intérpretes", semestre: 7, pre: ["425603"] },
+      "134708": { nombre: "Ingeniería Económica", semestre: 7, pre: ["1013401"] },
+
+      "425802": { nombre: "Sistemas Distribuidos", semestre: 8, pre: ["425702"] },
+      "425801": { nombre: "Sistemas de Información II", semestre: 8, pre: ["425705"] },
+      "425803": { nombre: "Simulación de Sistemas", semestre: 8, pre: ["425701"] },
+      "ElectivaII": { nombre: "Electiva II", semestre: 8 },
+      "423804": { nombre: "Finanzas para Ingenieros", semestre: 8, pre: ["134708"] },
+      "1123403": { nombre: "Ecología y Contaminación Ambiental", semestre: 8, pre: ["914201"] },
+
+      "425901": { nombre: "Ingeniería del Software", semestre: 9, pre: ["425801", "425802"] },
+      "424902": { nombre: "Seminario", semestre: 9 },
+      "ElectivaIII": { nombre: "Electiva III", semestre: 9 },
+      "ElectivaIV": { nombre: "Electiva IV", semestre: 9 },
+      "1032601": { nombre: "Legislación, Val. Nac. Proy. País", semestre: 9, pre: ["1013401"] },
+      "1033801": { nombre: "Metodología de la Investigación", semestre: 9 },
+
+      "TG": { nombre: "Trabajo de Grado", semestre: 10 },
+      "Pasantía": { nombre: "Pasantía Industrial", semestre: 10 }
+    };
+
+    const dependientes = {};
+    for (const [cod, data] of Object.entries(materias)) {
+      if (data.pre) {
+        data.pre.forEach(p => {
+          if (!dependientes[p]) dependientes[p] = [];
+          dependientes[p].push(cod);
+        });
+      }
+    }
+
+    const contenedor = document.getElementById("contenedor");
+    for (let s = 1; s <= 10; s++) {
+      const tabla = document.createElement("table");
+      const cabecera = `<h2>Semestre ${s}</h2><tr><th>Código</th><th>Nombre</th><th>Seleccionar</th></tr>`;
+      tabla.innerHTML = cabecera;
+      for (const [cod, data] of Object.entries(materias)) {
+        if (data.semestre === s) {
+          const fila = document.createElement("tr");
+          fila.className = "materia";
+          fila.dataset.codigo = cod;
+          fila.innerHTML = `
+            <td>${cod}</td>
+            <td>${data.nombre}</td>
+            <td><input type="checkbox" class="checkbox" onchange="resaltar('${cod}', this.checked)"></td>
+          `;
+          tabla.appendChild(fila);
+        }
+      }
+      contenedor.appendChild(tabla);
+    }
+
+    function resaltar(codigo, activo) {
+      document.querySelectorAll(".materia").forEach(m => {
+        m.classList.remove("predecessor", "successor");
+      });
+      if (!activo) return;
+      const visitado = new Set();
+
+      const preRec = (cod) => {
+        if (visitado.has(cod)) return;
+        visitado.add(cod);
+        document.querySelector(`.materia[data-codigo="${cod}"]`)?.classList.add("predecessor");
+        (materias[cod]?.pre || []).forEach(preRec);
+      };
+      const sucRec = (cod) => {
+        if (visitado.has(cod)) return;
+        visitado.add(cod);
+        document.querySelector(`.materia[data-codigo="${cod}"]`)?.classList.add("successor");
+        (dependientes[cod] || []).forEach(sucRec);
+      };
+      preRec(codigo);
+      visitado.clear();
+      sucRec(codigo);
+    }
+
+    function generarArbol() {
+      let res = "";
+      const dibujar = (cod, nivel) => {
+        res += `${"  ".repeat(nivel)}- ${cod}: ${materias[cod].nombre}\n`;
+        (dependientes[cod] || []).forEach(dep => dibujar(dep, nivel + 1));
+      };
+      const raices = Object.keys(materias).filter(cod => !Object.values(materias).some(m => m.pre?.includes(cod)));
+      raices.forEach(c => dibujar(c, 0));
+      document.getElementById("arbol").innerText = res;
+    }
+  </script>
+</body>
+</html>
+=======
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
-    <title>Prueba</title>
+    <title>Batalla de Techos 🔥💧🌐✈️</title>
+    <script src="./js/logica.js"></script>
 </head>
 <body>
-    <p>
-        probando una serie de elementos determinos
-    </p>
+    <section id="elejir-carta">
+        <h1>Batalla de Techos 🔥💧🌐✈️</h1>
+        <p>Elije un campeon:</p>
+        <!--Los botones de radio se en el mismo name para poder
+        elejir solo uno-->
+        <!--La etiqueta for vincula label con radio-->
+        <input type="radio" name="e-campeon" id="misu"> <label for="misu">Misu -> agua</label>
+        <input type="radio" name="e-campeon" id="tsuchi"> <label for="tsuchi">Tsuchi -> tierra</label>
+        <input type="radio" name="e-campeon" id="hi"> <label for="hi">Hi -> fuego</label>
+        <input type="radio" name="e-campeon" id="kaze"> <label for="kaze">kaze -> aire</label>
 
+        <button id="campeon">Yo te Elijo!</button>
+    </section>
+    <section id="batalla">
+        <div>Vida jugador: <span id="vidas_jugador">1000</span> campeon: <span id="campeon_jugador"></span></div>
+        <div>Vida Pc: <span id="vidas_pc">1000</span> campeon: <span id="campeon_pc"></span></div>
+        <div id="combate"></div>
+    </section>
+
+    <section id="resultado">
+        <button id="reiniciar">Volver a comenzar</button>
+    </section>
+    <section id="elejir-ataque">
+        <button id="carta_1"> ♠️</button>
+        <button id="carta_2"> ♥️ </button>
+        <button id="carta_3"> ♦️ </button>
+        <button id="carta_4"> ♣️ </button>
+
+        <button id="atacar">A la carga mi valiente!</button>
+    </section>
 </body>
 </html>
+>>>>>>> 4878f888edcb1dce0e11b4c3a4f29606a303e3a0
