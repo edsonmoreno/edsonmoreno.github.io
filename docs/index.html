@@ -3,25 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abasto Moreno</title>
-    <style>
-        *{
-            background-color: black;
-        }
-        h1{
-            text-align: center;
-            color: brown;
-        }
-        footer{
-            text-decoration: solid;
-            color: #fff;
-        }
-    </style>
+    <title>Abasto Moreno - Terminal de Facturación</title>
+    <!-- Enlazamos los estilos de la terminal -->
+    <link rel="stylesheet" href="../assets/css/terminal.css">
 </head>
 <body>
-    <h1>Abasto Moreno - Próximamente</h1>
-    <footer >
-        By Dante
-    </footer>
+
+    <!-- Contenedor principal de la terminal -->
+    <main class="terminal-container">
+        
+        <!-- Cabecera de la Consola (Barra superior estilo OS) -->
+        <header class="terminal-header">
+            <span class="terminal-title">root@abastomoreno:~$/invoice-software</span>
+            <div class="terminal-buttons">
+                <span class="btn close"></span>
+                <span class="btn minimize"></span>
+                <span class="btn maximize"></span>
+            </div>
+        </header>
+
+        <!-- Pantalla de comandos -->
+        <section class="terminal-body">
+            
+            <!-- Banner de bienvenida tipo ASCII o presentación -->
+            <div class="welcome-banner">
+                <pre>
+        ███╗   ██╗ ██████╗ ████████╗ █████╗ 
+        ████╗  ██║██╔═══██╗╚══██╔══╝██╔══██╗
+        ██╔██╗ ██║██║   ██║   ██║   ███████║
+        ██║╚██╗██║██║   ██║   ██║   ██╔══██║
+        ██║ ╚████║╚██████╔╝   ██║   ██║  ██║
+        ╚═╝  ╚═══╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝
+                </pre>
+                <p>Sistema Operativo de Facturación v1.0.0 (Estable)</p>
+                <p>Fecha actual: <span id="current-date">--/--/----</span></p>
+            </div>
+            
+            <div class="divider">=================================================</div>
+
+            <!-- Sección del Controlador: Entrada de datos -->
+        <section class="invoice-inputs">
+            
+            <div class="input-group">
+                <label for="client-name">client@name:~$ </label>
+                <input type="text" id="client-name" autocomplete="off" placeholder="Nombre del cliente">
+            </div>
+            <div class="input-group">
+                <label for="client-phone">client@phone:~$ </label>
+                <input type="text" id="client-phone" autocomplete="off" placeholder="+58 ...">
+            </div>
+            
+            <div class="divider">-------------------------------------------------</div>
+            
+            <form id="invoice-form">
+                <div class="input-group prompt-line">
+                    <label for="product-cmd">abasto@prompt:~$ </label>
+                    <input type="text" id="product-cmd" autocomplete="off" placeholder="cant, producto, precio" required>
+                    <button type="submit" style="display: none;"></button>
+                </div>
+            </form>
+        </section>
+
+            <div class="divider">=================================================</div>
+
+            <!-- Sección de la Vista: Tabla de Facturación activa -->
+            <section class="invoice-preview">
+                <table id="invoice-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">CAN</th>
+                            <th style="width: 55%;">DESCRIPCIÓN</th>
+                            <th style="width: 17%;">P.U</th>
+                            <th style="width: 18%;">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-items">
+                        <!-- Aquí el archivo JavaScript (Controlador) inyectará las filas de forma dinámica -->
+                    </tbody>
+                </table>
+                
+                <div class="divider">-------------------------------------------------</div>
+                
+                <!-- Totales del sistema -->
+                <div class="invoice-totals">
+                    <p>SUBTOTAL: <span id="txt-subtotal">$0.00</span></p>
+                    <p class="discount-text">DESCUENTO (10%): <span id="txt-discount">-$0.00</span></p>
+                    <p class="grand-total">TOTAL NETO: <span id="txt-total">$0.00</span></p>
+                </div>
+            </section>
+
+        </section>
+    </main>
+
+    <link rel="stylesheet" href="../assets/css/terminal.css">
+    <!-- Enlazamos los controladores lógicos en orden de dependencia -->
+    <script src="../assets/js/driveService.js"></script>
+    <script src="../assets/js/invoice.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

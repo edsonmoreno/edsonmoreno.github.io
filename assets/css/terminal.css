@@ -1,0 +1,208 @@
+/* ==========================================================================
+   VARIABLES DE DISEÑO (Configuración de colores y temas)
+   ========================================================================== */
+:root {
+    --bg-dark: #121212;         /* Fondo mate suave para no cansar la vista */
+    --bg-header: #1a1a1a;       /* Fondo de la barra superior de la terminal */
+    --text-main: #e0e0e0;       /* Texto general de la consola (blanco grisáceo) */
+    --text-bright: #ffffff;     /* Texto resaltado o títulos importantes */
+    --terminal-green: #10b981;  /* Verde para el prompt y totales netos */
+    --terminal-red: #ff6b6b;    /* Rojo suave para los descuentos/errores */
+    --border-color: #333333;    /* Líneas divisorias y bordes de ventanas */
+    --font-stack: 'Courier New', Courier, monospace;
+}
+
+/* ==========================================================================
+   ESTILOS GENERALES Y RESETEO
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #0a0a0a; /* Fondo externo un poco más oscuro */
+    color: var(--text-main);
+    font-family: var(--font-stack);
+    font-size: 14px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   CONTENEDOR DE LA TERMINAL (La ventana del sistema)
+   ========================================================================== */
+.terminal-container {
+    width: 100%;
+    max-width: 650px; /* Ancho ideal para trabajar cómodo en mostrador */
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+}
+
+/* Barra superior estilo Sistema Operativo */
+.terminal-header {
+    background-color: var(--bg-header);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.terminal-title {
+    font-size: 12px;
+    color: #888888;
+}
+
+/* Botones de control de ventana ficticios */
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.btn.close { background-color: #ff5f56; }
+.btn.minimize { background-color: #ffbd2e; }
+.btn.maximize { background-color: #27c93f; }
+
+/* Cuerpo interno de la consola */
+.terminal-body {
+    padding: 20px;
+}
+
+/* ==========================================================================
+   COMPONENTES TEXTUALES Y SEPARADORES
+   ========================================================================== */
+.welcome-banner pre {
+    color: var(--terminal-green);
+    font-size: 11px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    overflow-x: auto;
+}
+
+.welcome-banner p {
+    margin: 4px 0;
+    color: #aaa;
+}
+
+.divider {
+    color: var(--border-color);
+    margin: 15px 0;
+    letter-spacing: 1px;
+    user-select: none;
+}
+
+/* ==========================================================================
+   FORMULARIOS Y ENTRADAS DE DATOS (Prompts de comandos)
+   ========================================================================== */
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    color: var(--terminal-green);
+    white-space: pre;
+}
+
+.input-group input {
+    background: transparent;
+    border: none;
+    color: var(--text-bright);
+    font-family: var(--font-stack);
+    font-size: 14px;
+    flex-grow: 1;
+    outline: none;
+}
+
+/* Animación de cursor parpadeante en la línea de comandos principal */
+.prompt-line input {
+    caret-color: var(--terminal-green);
+}
+
+/* ==========================================================================
+   TABLA DE FACTURACIÓN (Vista del Ticket)
+   ========================================================================== */
+#invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#invoice-table th {
+    color: var(--text-bright);
+    text-align: left;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 8px;
+    font-weight: bold;
+}
+
+#invoice-table td {
+    padding: 8px 2px;
+    vertical-align: top;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+/* Alineaciones específicas */
+#invoice-table th:nth-child(1), 
+#invoice-table td:nth-child(1) { text-align: center; } /* Cantidad */
+
+#invoice-table th:nth-child(3), 
+#invoice-table td:nth-child(3),
+#invoice-table th:nth-child(4), 
+#invoice-table td:nth-child(4) { text-align: right; }  /* Precios */
+
+/* ==========================================================================
+   SECCIÓN DE TOTALES
+   ========================================================================== */
+.invoice-totals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    margin-top: 15px;
+}
+
+.invoice-totals p {
+    color: #aaa;
+}
+
+.invoice-totals span {
+    color: var(--text-bright);
+    display: inline-block;
+    width: 90px;
+    text-align: right;
+}
+
+.discount-text {
+    color: var(--terminal-red) !important;
+}
+.discount-text span {
+    color: var(--terminal-red);
+}
+
+.grand-total {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--terminal-green) !important;
+    border-top: 1px solid var(--border-color);
+    padding-top: 6px;
+}
+.grand-total span {
+    color: var(--terminal-green);
+}
