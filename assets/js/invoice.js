@@ -11,6 +11,10 @@ const INVENTARIO_PRODUCTOS = [
     { id: "mayonesa-mavesa-445", nombre: "Mavesa mayonesa 445g", costo: 3.87, margen: 20.00 },
     { id: "mayonesa-mavesa-175", nombre: "Mavesa mayonesa 175g", costo: 1.94, margen: 20.00 },
 
+    // --- TODDY ---
+    { id: "toddy-200", nombre: "Toddy 200g", costo: 2.63, margen: 20.00 },
+    { id: "toddy-1000", nombre: "Toddy 1Kg", costo: 10.90, margen: 20.00 },
+
     // --- KETCHUP Y VINAGRE ---
     { id: "ketchup-pampero-387", nombre: "Pampero ketchup 387g", costo: 2.83, margen: 20.00 },
     { id: "ketchup-pampero-189", nombre: "Pampero ketchup 189g", costo: 1.35, margen: 20.00 },
@@ -79,6 +83,11 @@ let cantidadPendiente = 1;
  * Procesa el comando rápido de la terminal
  */
 function parseProductCommand(commandLine) {
+    // Añade esto en las primeras líneas de tu función parseProductCommand:
+    if (commandLine.trim().toLowerCase() === "save") {
+        guardarFacturaActual();
+        return;
+    }
     const promptInput = document.getElementById("product-cmd");
 
     // --- FLUJO B: SI EL SISTEMA ESTÁ ESPERANDO QUE ELIJAS UN NÚMERO ---
@@ -250,4 +259,86 @@ function resetInvoiceTotals() {
     const promptInput = document.getElementById("product-cmd");
     if (promptInput) promptInput.placeholder = "cant, producto, precio";
     updateInvoiceTotals();
+}
+
+/**
+ * ==========================================================================
+ * SIMULACIÓN DE GUARDADO Y PERSISTENCIA (ENSAYO)
+ * ==========================================================================
+ */
+
+/**
+ * Recolecta toda la información de la pantalla actual, arma el JSON 
+ * y simula el envío a la base de datos de Google.
+ */
+function guardarFacturaActual() {
+    // 1. Capturar datos del cliente desde la interfaz
+    const clientNameInput = document.getElementById("client-name");
+    const clientPhoneInput = document.getElementById("client-phone");
+    const dateElement = document.getElementById("current-date");
+
+    const cliente = clientNameInput ? clientNameInput.value.trim() : "Consumidor Final";
+    const telefono = clientPhoneInput ? clientPhoneInput.value.trim() : "N/A";
+    const fecha = dateElement ? dateElement.textContent : "--/--/----";
+
+    // Validar si hay productos en la cuenta antes de guardar (Seguridad básica)
+    if (invoiceSubtotal === 0) {
+        alert("[!] Error: No puedes guardar una factura vacía.");
+        return;
+    }
+
+    // 2. Extraer los productos que están metidos en la tabla HTML en este momento
+    const productosFacturados = [];
+    const filas = document.querySelectorAll("#invoice-items tr:not(.selection-system-row):not(.selection-option-row)");
+
+    filas.forEach(fila => {
+        const columnas = fila.querySelectorAll("td");
+        if (columnas.length >= 4) {
+            productosFacturados.push({
+                cantidad: parseInt(columnas[0].textContent),
+                descripcion: columnas[1].textContent,
+                precio_unitario: parseFloat(columnas[2].textContent),
+                total: parseFloat(columnas[3].textContent)
+            });
+        }
+    });
+
+    // 3. Calcular totales finales para el registro
+    let discount = 0.0;
+    if (invoiceSubtotal > 20.0) {
+        discount = invoiceSubtotal * 0.10;
+    }
+    const grandTotal = invoiceSubtotal - discount;
+
+    // 4. ARMAR EL PAQUETE COMPLETO (Estructura JSON final)
+    const facturaJSON = {
+        meta: {
+            fecha: fecha,
+            cliente: cliente || "Consumidor Final",
+            telefono: telefono || "N/A"
+        },
+        totales: {
+            subtotal: invoiceSubtotal,
+            descuento: discount,
+            total_neto: grandTotal
+        },
+        detalles: productosFacturados
+    };
+
+    // 5. ENSAYO DE ENVÍO (Por ahora, lo auditamos por la consola del navegador)
+    console.log("========================================");
+    console.log("[+] ENVIANDO FACTURA A GOOGLE DRIVE...");
+    console.log("========================================");
+    console.log(JSON.stringify(facturaJSON, null, 2)); // Convierte el objeto a texto legible
+    console.log("========================================");
+
+    alert(`[ OK ] Factura de ${facturaJSON.meta.cliente} procesada localmente.\nTotal: $${grandTotal.toFixed(2)}\nRevisa la consola (F12) para ver el JSON.`);
+
+    // 6. Limpiar la pantalla para la siguiente venta
+    resetInvoiceTotals();
+    const tbody = document.getElementById("invoice-items");
+    if (tbody) tbody.innerHTML = "";
+    if (clientNameInput) clientNameInput.value = "";
+    if (clientPhoneInput) clientPhoneInput.value = "";
+    if (clientNameInput) clientNameInput.focus();
 }
